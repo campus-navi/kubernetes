@@ -13,6 +13,8 @@ spec:
       labels:
         app: backend
     spec:
+      imagePullSecrets:
+        - name: ecr-secret
       containers:
         - name: backend
           image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-backend-server:2dd203b78a8f3f567b716dcf29ce8e946713856f
