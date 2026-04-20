@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: backend-deploy
+  namespace: be
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-backend-server:2dd203b78a8f3f567b716dcf29ce8e946713856f
+          ports:
+            - containerPort: 8080
+    
