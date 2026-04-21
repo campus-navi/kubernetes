@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-fe:latest
+          image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-frontend-server:c6106ca0e93af0c7a02485703411bf447ff0c696
           ports:
             - containerPort: 80

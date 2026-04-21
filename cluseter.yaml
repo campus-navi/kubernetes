@@ -1,0 +1,39 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: campus-navi-cluster
+  region:  ap-northeast-2
+vpc:
+  clusterEndpoints:
+    publicAccess: true
+    privateAccess: true
+  subnets:
+    private:
+      ap-northeast-2a:
+        id: subnet-0a65ffa204b303f35 # pri 1
+      ap-northeast-2c:
+        id: subnet-0056ebec36f022a3f # pri 2
+    public:
+      ap-northeast-2a:
+        id: subnet-0bbd97a1f4d963a09 #pub 1
+      ap-northeast-2c:
+        id: subnet-03f059209a254ef2f #pub 2
+
+managedNodeGroups:
+  - name: ng-1-workers
+    labels: { role: workers }
+    instanceType: t3.small
+    desiredCapacity: 2
+    privateNetworking: true
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+  
+  - name: ng-2-builders
+    labels: { role: builders }
+    instanceType: t3.small
+    desiredCapacity: 1
+    privateNetworking: true
+    iam:
+      withAddonPolicies:
+        imageBuilder: true
