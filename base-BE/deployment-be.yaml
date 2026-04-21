@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-deploy
-  namespace: be
+  namespace: campus-navi
 spec:
   replicas: 2
   selector:
@@ -20,4 +20,8 @@ spec:
           image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-backend-server:8e77fe81acb1c35fb12c0922fbe4b904a0e357fe
           ports:
             - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_LEVEL
+              value: local
+          
     
