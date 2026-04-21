@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: campus-navi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-frontend-server:c6106ca0e93af0c7a02485703411bf447ff0c696
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+              name: frontend-secret
