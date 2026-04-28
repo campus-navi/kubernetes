@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: backend-debug
+  namespace: campus-navi
+spec:
+  backoffLimit: 0   # 실패해도 재시도 안 함
+  template:
+    spec:
+      containers:
+        - name: backend
+          image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-backend-server:f0dddf373caecd09317efe488e647b816890124f
+          envFrom:
+            - secretRef:
+                name: backend-secret
+      restartPolicy: Never

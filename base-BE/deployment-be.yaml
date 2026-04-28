@@ -17,7 +17,7 @@ spec:
         - name: ecr-secret
       containers:
         - name: backend
-          image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-backend-server:8e77fe81acb1c35fb12c0922fbe4b904a0e357fe
+          image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-backend-server:f0dddf373caecd09317efe488e647b816890124f
           ports:
             - containerPort: 8080
           env:
