@@ -9,7 +9,7 @@ metadata:
 
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
 
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:154959837798:certificate/36a77dbb-9a99-44f1-a552-9c45f8f0fbaf
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:154959837798:certificate/d74499a9-d932-4578-98a0-7b7f317bb429
 
     alb.ingress.kubernetes.io/backend-protocol: HTTPS
 
