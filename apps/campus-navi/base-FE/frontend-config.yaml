@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-configMap
+  namespace: campus-navi
+data:
+  VITE_API_BASE_URL: /api/v1
+  VITE_API_REFRESH_PATH: /auth/reissue
+  VITE_API_TIMEOUT_MS: "10000"
+  VITE_ACCESS_TOKEN_STORAGE_KEY: navi.accessToken
+  VITE_REFRESH_TOKEN_STORAGE_KEY: navi.refreshToken

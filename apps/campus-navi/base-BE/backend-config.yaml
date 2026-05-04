@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: campus-navi
+data:
+  AWS_REGION: ap-northeast-2
+  S3_BUCKET: campus-navi-bucket
+  S3_REGION: ap-northeast-2
+  S3_BASE_URL: https://campus-navi-bucket.s3.ap-northeast-2.amazonaws.com

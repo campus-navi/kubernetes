@@ -24,6 +24,8 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: prod
           envFrom:
+            - configMapRef:
+                name: backend-config
             - secretRef:
                 name: backend-secret
           
