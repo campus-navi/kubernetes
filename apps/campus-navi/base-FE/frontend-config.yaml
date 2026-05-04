@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: frontend-configMap
+  name: frontend-config
   namespace: campus-navi
 data:
   VITE_API_BASE_URL: /api/v1
