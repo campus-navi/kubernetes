@@ -1,0 +1,28 @@
+serviceAccount:
+  create: false
+  name: argocd-image-updater
+
+config:
+  argocd:
+    grpcWeb: true
+    serverAddress: "http://argocd-server.argocd"
+    insecure: true
+    plaintext: true
+
+  logLevel: debug
+
+  registries:
+    - name: ECR
+      api_url: "https://154959837798.dkr.ecr.ap-northeast-2.amazonaws.com"
+      prefix: "154959837798.dkr.ecr.ap-northeast-2.amazonaws.com"
+      ping: true
+      insecure: false
+      credentials: "ext:/scripts/ecr-login.sh"
+      credsexpire: 10h
+
+authScripts:
+  enabled: true
+  scripts:
+    ecr-login.sh: |
+      #!/bin/sh
+      aws ecr get-login-password --region ap-northeast-2 | awk '{print "AWS:" $0}'

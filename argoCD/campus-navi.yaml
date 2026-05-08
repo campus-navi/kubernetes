@@ -1,0 +1,288 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  creationTimestamp: "2026-05-04T04:29:56Z"
+  generation: 2058
+  name: campus-navi
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: backend=154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-backend-server
+    argocd-image-updater.argoproj.io/backend.update-strategy: newest-build
+    argocd-image-updater.argoproj.io/backend.allow-tags: regexp:^[0-9a-f]{7,40}$
+    argocd-image-updater.argoproj.io/write-back-method: argocd
+    argocd-image-updater.argoproj.io/git-branch: main
+  resourceVersion: "4884608"
+  uid: 7604540a-9486-4395-ada4-1ded97ee2707
+spec:
+  destination:
+    namespace: campus-navi
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: apps/campus-navi
+    repoURL: https://github.com/campus-navi/kubernetes
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      enabled: true
+      selfHeal: true
+status:
+  controllerNamespace: argocd
+  health:
+    lastTransitionTime: "2026-05-04T07:59:41Z"
+    status: Healthy
+  history:
+  - deployStartedAt: "2026-05-04T06:47:36Z"
+    deployedAt: "2026-05-04T06:47:37Z"
+    id: 6
+    initiatedBy:
+      username: admin
+    revision: b7ef381b2e98f3b3f6832d42ac7508fdff430af5
+    source:
+      path: apps/campus-navi
+      repoURL: https://github.com/campus-navi/kubernetes
+      targetRevision: HEAD
+  - deployStartedAt: "2026-05-04T07:02:19Z"
+    deployedAt: "2026-05-04T07:02:20Z"
+    id: 7
+    initiatedBy:
+      automated: true
+    revision: 1d731df4b5fd6be64fc18393e9f808e5129db181
+    source:
+      path: apps/campus-navi
+      repoURL: https://github.com/campus-navi/kubernetes
+      targetRevision: HEAD
+  - deployStartedAt: "2026-05-04T07:52:01Z"
+    deployedAt: "2026-05-04T07:52:03Z"
+    id: 8
+    initiatedBy:
+      username: admin
+    revision: 1d731df4b5fd6be64fc18393e9f808e5129db181
+    source:
+      path: apps/campus-navi
+      repoURL: https://github.com/campus-navi/kubernetes
+      targetRevision: HEAD
+  - deployStartedAt: "2026-05-04T07:54:31Z"
+    deployedAt: "2026-05-04T07:54:32Z"
+    id: 9
+    initiatedBy:
+      username: admin
+    revision: 1d731df4b5fd6be64fc18393e9f808e5129db181
+    source:
+      path: apps/campus-navi
+      repoURL: https://github.com/campus-navi/kubernetes
+      targetRevision: HEAD
+  - deployStartedAt: "2026-05-04T07:54:50Z"
+    deployedAt: "2026-05-04T07:54:51Z"
+    id: 10
+    initiatedBy:
+      username: admin
+    revision: 4e92ed6bac241623f68e77f664b3a24a6f00056a
+    source:
+      path: apps/campus-navi
+      repoURL: https://github.com/campus-navi/kubernetes
+      targetRevision: HEAD
+  - deployStartedAt: "2026-05-04T07:58:04Z"
+    deployedAt: "2026-05-04T07:58:05Z"
+    id: 11
+    initiatedBy:
+      username: admin
+    revision: 4324e1918691f457856e55418e2d894ee0c0fedd
+    source:
+      path: apps/campus-navi
+      repoURL: https://github.com/campus-navi/kubernetes
+      targetRevision: HEAD
+  - deployStartedAt: "2026-05-04T07:59:37Z"
+    deployedAt: "2026-05-04T07:59:38Z"
+    id: 12
+    initiatedBy:
+      username: admin
+    revision: c4cb5edd852fcafcad722f628b01621e96522dd7
+    source:
+      path: apps/campus-navi
+      repoURL: https://github.com/campus-navi/kubernetes
+      targetRevision: HEAD
+  - deployStartedAt: "2026-05-06T04:23:23Z"
+    deployedAt: "2026-05-06T04:23:24Z"
+    id: 13
+    initiatedBy:
+      username: admin
+    revision: c4cb5edd852fcafcad722f628b01621e96522dd7
+    source:
+      path: apps/campus-navi
+      repoURL: https://github.com/campus-navi/kubernetes
+      targetRevision: HEAD
+  - deployStartedAt: "2026-05-07T04:48:11Z"
+    deployedAt: "2026-05-07T04:48:12Z"
+    id: 14
+    initiatedBy:
+      username: admin
+    revision: 2d97a0034f5f42019c5f0970f23a95ca6edd173a
+    source:
+      path: apps/campus-navi
+      repoURL: https://github.com/campus-navi/kubernetes
+      targetRevision: HEAD
+  - deployStartedAt: "2026-05-08T04:53:51Z"
+    deployedAt: "2026-05-08T04:53:51Z"
+    id: 15
+    initiatedBy:
+      username: admin
+    revision: 2d97a0034f5f42019c5f0970f23a95ca6edd173a
+    source:
+      path: apps/campus-navi
+      repoURL: https://github.com/campus-navi/kubernetes
+      targetRevision: HEAD
+  operationState:
+    finishedAt: "2026-05-08T04:53:51Z"
+    message: successfully synced (all tasks run)
+    operation:
+      initiatedBy:
+        username: admin
+      retry: {}
+      sync:
+        revision: 2d97a0034f5f42019c5f0970f23a95ca6edd173a
+        source:
+          path: apps/campus-navi
+          repoURL: https://github.com/campus-navi/kubernetes
+          targetRevision: HEAD
+        syncStrategy:
+          hook: {}
+    phase: Succeeded
+    startedAt: "2026-05-08T04:53:51Z"
+    syncResult:
+      resources:
+      - group: networking.k8s.io
+        hookPhase: Succeeded
+        kind: Ingress
+        message: ignored (requires pruning)
+        name: campus-navi-ingress
+        namespace: campus-navi
+        status: PruneSkipped
+        syncPhase: Sync
+        version: v1
+      - group: ""
+        hookPhase: Succeeded
+        kind: Namespace
+        message: ignored (requires pruning)
+        name: campus-navi
+        namespace: ""
+        status: PruneSkipped
+        syncPhase: Sync
+        version: v1
+      - group: ""
+        hookPhase: Running
+        kind: Service
+        message: service/backend-svc unchanged
+        name: backend-svc
+        namespace: campus-navi
+        status: Synced
+        syncPhase: Sync
+        version: v1
+      - group: ""
+        hookPhase: Running
+        kind: Service
+        message: service/frontend-svc unchanged
+        name: frontend-svc
+        namespace: campus-navi
+        status: Synced
+        syncPhase: Sync
+        version: v1
+      - group: apps
+        hookPhase: Running
+        images:
+        - 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-frontend-server:c6106ca0e93af0c7a02485703411bf447ff0c696
+        kind: Deployment
+        message: deployment.apps/frontend unchanged
+        name: frontend
+        namespace: campus-navi
+        status: Synced
+        syncPhase: Sync
+        version: v1
+      - group: apps
+        hookPhase: Running
+        images:
+        - 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-backend-server:f0dddf373caecd09317efe488e647b816890124f
+        kind: Deployment
+        message: deployment.apps/backend-deploy unchanged
+        name: backend-deploy
+        namespace: campus-navi
+        status: Synced
+        syncPhase: Sync
+        version: v1
+      - group: external-secrets.io
+        hookPhase: Running
+        kind: ExternalSecret
+        message: externalsecret.external-secrets.io/backend-secret configured
+        name: backend-secret
+        namespace: campus-navi
+        status: Synced
+        syncPhase: Sync
+        version: v1
+      revision: 2d97a0034f5f42019c5f0970f23a95ca6edd173a
+      source:
+        path: apps/campus-navi
+        repoURL: https://github.com/campus-navi/kubernetes
+        targetRevision: HEAD
+  reconciledAt: "2026-05-08T08:05:02Z"
+  resourceHealthSource: appTree
+  resources:
+  - kind: Namespace
+    name: campus-navi
+    requiresPruning: true
+    status: OutOfSync
+    version: v1
+  - kind: Service
+    name: backend-svc
+    namespace: campus-navi
+    status: Synced
+    version: v1
+  - kind: Service
+    name: frontend-svc
+    namespace: campus-navi
+    status: Synced
+    version: v1
+  - group: apps
+    kind: Deployment
+    name: backend-deploy
+    namespace: campus-navi
+    status: Synced
+    version: v1
+  - group: apps
+    kind: Deployment
+    name: frontend
+    namespace: campus-navi
+    status: Synced
+    version: v1
+  - group: external-secrets.io
+    kind: ExternalSecret
+    name: backend-secret
+    namespace: campus-navi
+    status: Synced
+    version: v1
+  - group: networking.k8s.io
+    kind: Ingress
+    name: campus-navi-ingress
+    namespace: campus-navi
+    requiresPruning: true
+    status: OutOfSync
+    version: v1
+  sourceHydrator: {}
+  sourceType: Kustomize
+  summary:
+    externalURLs:
+    - http://k8s-campusna-campusna-63234b608b-1833841819.ap-northeast-2.elb.amazonaws.com/
+    - http://k8s-campusna-campusna-63234b608b-1833841819.ap-northeast-2.elb.amazonaws.com/api
+    images:
+    - 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-backend-server:f0dddf373caecd09317efe488e647b816890124f
+    - 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-frontend-server:c6106ca0e93af0c7a02485703411bf447ff0c696
+  sync:
+    comparedTo:
+      destination:
+        namespace: campus-navi
+        server: https://kubernetes.default.svc
+      source:
+        path: apps/campus-navi
+        repoURL: https://github.com/campus-navi/kubernetes
+        targetRevision: HEAD
+    revision: 2d97a0034f5f42019c5f0970f23a95ca6edd173a
+    status: OutOfSync
