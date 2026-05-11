@@ -25,4 +25,7 @@ authScripts:
   scripts:
     ecr-login.sh: |
       #!/bin/sh
+      export HOME=/tmp
+      export AWS_CONFIG_FILE=/tmp/aws-config
+      export AWS_SHARED_CREDENTIALS_FILE=/tmp/aws-credentials
       echo "AWS:$(aws ecr get-login-password --region ap-northeast-2)"
