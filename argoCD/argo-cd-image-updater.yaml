@@ -25,4 +25,4 @@ authScripts:
   scripts:
     ecr-login.sh: |
       #!/bin/sh
-      aws ecr get-login-password --region ap-northeast-2 | awk '{print "AWS:" $0}'
+      echo "AWS:$(aws ecr get-login-password --region ap-northeast-2)"
