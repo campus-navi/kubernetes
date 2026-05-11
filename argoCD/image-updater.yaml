@@ -1,0 +1,17 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: campus-navi-backend
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: campus-navi
+      useAnnotations: false
+      images:
+        - alias: backend
+          imageName: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-backend-server
+          commonUpdateSettings:
+            updateStrategy: newest-build
+            allowTags: regexp:^prod-[0-9a-f]{7,40}$
+      writeBackConfig:
+        method: argocd
