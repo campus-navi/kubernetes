@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-deploy
+  namespace: campus-navi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai
+  template:
+    metadata:
+      labels:
+        app: ai
+    spec:
+      imagePullSecrets:
+        - name: ecr-secret
+      containers:
+        - name: ai
+          image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-ai:2ca376e55f32fa96931946979256a92ca3f70ea5
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: ai-secret
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10

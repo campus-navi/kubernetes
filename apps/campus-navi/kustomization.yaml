@@ -7,3 +7,5 @@ resources: #한번에 실행
   - base-BE/svc-be.yaml
   - base-FE/deployment-fe.yaml
   - base-FE/svc-fe.yaml
+  - ai/ai-deployment.yaml
+  - ai/ai-svc.yaml
