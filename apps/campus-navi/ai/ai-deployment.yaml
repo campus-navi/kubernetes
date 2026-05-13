@@ -22,6 +22,8 @@ spec:
             - containerPort: 8000
           envFrom:
             - configMapRef:
+                name: ai-config
+            - secretRef:
                 name: ai-secret
           readinessProbe:
             httpGet:
