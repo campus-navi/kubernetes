@@ -18,6 +18,7 @@ spec:
       containers:
         - name: ai
           image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-ai:7e6a7b217ce8c84af377b96e2e6c1de432c7ec61
+          ports:
             - containerPort: 8000
           envFrom:
             - configMapRef:
