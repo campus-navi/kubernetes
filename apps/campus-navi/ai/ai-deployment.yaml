@@ -17,8 +17,7 @@ spec:
         - name: ecr-secret
       containers:
         - name: ai
-          image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-ai:ab610ba239ac120d1f638724bda4e49ad6bb1be0
-          ports:
+          image: 154959837798.dkr.ecr.ap-northeast-2.amazonaws.com/campus-navi-ai:7e6a7b217ce8c84af377b96e2e6c1de432c7ec61
             - containerPort: 8000
           envFrom:
             - configMapRef:
