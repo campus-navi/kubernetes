@@ -1,121 +1,157 @@
-defaultRules:
-  create: false
+# =========================================================
+# kube-prometheus-stack values.yaml
+# Step 1에서 만든 monitoring 노드그룹(label: role=monitoring,
+# taint: dedicated=monitoring:NoSchedule)에만 스케줄되도록 설정
+# =========================================================
 
+# 공통 nodeSelector / toleration 앵커 (YAML 안에서 중복 방지)
+commonNodeSelector: &nodeSelector
+  role: monitoring
+
+commonTolerations: &tolerations
+  - key: "dedicated"
+    operator: "Equal"
+    value: "monitoring"
+    effect: "NoSchedule"
+
+# ---------------------------------------------------------
+# Prometheus 본체
+# ---------------------------------------------------------
+prometheus:
+  prometheusSpec:
+    nodeSelector: *nodeSelector
+    tolerations: *tolerations
+
+    # 중요: Spring Boot 서비스 등 우리가 나중에 만드는 ServiceMonitor를
+    # release 라벨과 상관없이 전부 스크랩 대상으로 인식하게 함.
+    # (기본값은 release=kube-prometheus-stack 라벨이 붙은 ServiceMonitor만 인식)
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+    retention: 15d
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1.5Gi   # 카디널리티 늘어날 여지를 감안해 여유를 좀 더 둠
+
+# ---------------------------------------------------------
+# Alertmanager
+# ---------------------------------------------------------
 alertmanager:
-  enabled: true
-
   alertmanagerSpec:
-    nodeSelector:
-      role: monitoring
-
-    tolerations:
-      - key: dedicated
-        operator: Equal
-        value: monitoring
-        effect: NoSchedule
-
+    nodeSelector: *nodeSelector
+    tolerations: *tolerations
     resources:
       requests:
         cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 100m
         memory: 128Mi
-      limits:
-        cpu: 200m
-        memory: 256Mi
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
 
-prometheus:
-  enabled: true
+  # Step 4에서 실제 route/receiver(디스코드 브릿지)를 채웁니다.
+  # 지금은 기본 골격만 둡니다.
+  config:
+    route:
+      receiver: "default"
+      group_by: ["alertname", "namespace"]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 3h
+    receivers:
+      - name: "default"
 
-  prometheusSpec:
-    replicas: 1
-    retention: 2d
-
-    nodeSelector:
-      role: monitoring
-
-    tolerations:
-      - key: dedicated
-        operator: Equal
-        value: monitoring
-        effect: NoSchedule
-
-    resources:
-      requests:
-        cpu: 200m
-        memory: 768Mi
-      limits:
-        cpu: 700m
-        memory: 1536Mi
-
+# ---------------------------------------------------------
+# Grafana
+# ---------------------------------------------------------
 grafana:
-  enabled: true
+  nodeSelector: *nodeSelector
+  tolerations: *tolerations
 
-  service:
-    type: ClusterIP
+  adminPassword: "chacha1212" # 실제로는 kubernetes_secret 또는 SSM/Secrets Manager 연동 권장
 
-  nodeSelector:
-    role: monitoring
-
-  tolerations:
-    - key: dedicated
-      operator: Equal
-      value: monitoring
-      effect: NoSchedule
+  persistence:
+    enabled: true
+    storageClassName: gp3
+    size: 5Gi
 
   resources:
     requests:
       cpu: 100m
-      memory: 192Mi
-    limits:
-      cpu: 300m
-      memory: 512Mi
-
-prometheusOperator:
-  admissionWebhooks:
-    enabled: false
-
-  nodeSelector:
-    role: monitoring
-
-  tolerations:
-    - key: dedicated
-      operator: Equal
-      value: monitoring
-      effect: NoSchedule
-
-  resources:
-    requests:
-      cpu: 50m
       memory: 128Mi
     limits:
       cpu: 200m
       memory: 256Mi
 
+  # Prometheus datasource는 차트가 자동으로 등록해줌
+
+# ---------------------------------------------------------
+# kube-state-metrics (Deployment) / Prometheus Operator 컨트롤러
+# 이 두 개도 nodeSelector/toleration을 안 걸면 taint 때문에
+# monitoring 노드가 아니라 앱 노드에 뜨게 됨 -> 명시적으로 고정
+# ---------------------------------------------------------
 kube-state-metrics:
-  nodeSelector:
-    role: monitoring
-
-  tolerations:
-    - key: dedicated
-      operator: Equal
-      value: monitoring
-      effect: NoSchedule
-
+  nodeSelector: *nodeSelector
+  tolerations: *tolerations
   resources:
     requests:
       cpu: 50m
-      memory: 96Mi
+      memory: 64Mi
     limits:
-      cpu: 150m
-      memory: 192Mi
+      cpu: 100m
+      memory: 128Mi
 
-prometheus-node-exporter:
-  enabled: true
+prometheusOperator:
+  nodeSelector: *nodeSelector
+  tolerations: *tolerations
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 200Mi
+  admissionWebhooks:
+    patch:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
 
+# ---------------------------------------------------------
+# node-exporter는 기본값 그대로 사용
+# (DaemonSet이라 전체 노드에서 도는 게 맞으므로 monitoring 노드에 강제하지 않음.
+#  다만 monitoring 노드에 taint가 걸려있어 기본 설정으로는 이 노드 자체의
+#  OS 메트릭은 안 잡힘 -- 필요하면 node-exporter에도 tolerations 추가)
+# ---------------------------------------------------------
+
+# ---------------------------------------------------------
+# EKS는 매니지드 컨트롤 플레인이라 이 세 컴포넌트에 접근 불가.
+# 끄지 않으면 타겟이 영원히 DOWN 상태로 남음.
+# ---------------------------------------------------------
 kubeControllerManager:
   enabled: false
-
 kubeScheduler:
   enabled: false
-
 kubeEtcd:
   enabled: false
