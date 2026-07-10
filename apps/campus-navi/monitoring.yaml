@@ -1,35 +1,115 @@
-prometheus:
-  prometheusSpec:
-    retention: 2d
+defaultRules:
+  create: false
+
+alertmanager:
+  enabled: true
+
+  alertmanagerSpec:
+    nodeSelector:
+      role: monitoring
+
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: monitoring
+        effect: NoSchedule
 
     resources:
       requests:
-        cpu: 100m
-        memory: 384Mi
+        cpu: 50m
+        memory: 128Mi
       limits:
         cpu: 200m
+        memory: 256Mi
+
+prometheus:
+  enabled: true
+
+  prometheusSpec:
+    replicas: 1
+    retention: 2d
+
+    nodeSelector:
+      role: monitoring
+
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: monitoring
+        effect: NoSchedule
+
+    resources:
+      requests:
+        cpu: 200m
         memory: 768Mi
+      limits:
+        cpu: 700m
+        memory: 1536Mi
 
 grafana:
+  enabled: true
+
   service:
     type: ClusterIP
 
+  nodeSelector:
+    role: monitoring
+
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: monitoring
+      effect: NoSchedule
+
   resources:
     requests:
-      cpu: 50m
-      memory: 64Mi
-    limits:
       cpu: 100m
-      memory: 128Mi
+      memory: 192Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
 
 prometheusOperator:
+  admissionWebhooks:
+    enabled: false
+
+  nodeSelector:
+    role: monitoring
+
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: monitoring
+      effect: NoSchedule
+
   resources:
     requests:
       cpu: 50m
-      memory: 64Mi
-    limits:
-      cpu: 100m
       memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+kube-state-metrics:
+  nodeSelector:
+    role: monitoring
+
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: monitoring
+      effect: NoSchedule
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 96Mi
+    limits:
+      cpu: 150m
+      memory: 192Mi
+
+prometheus-node-exporter:
+  enabled: true
 
 kubeControllerManager:
   enabled: false
