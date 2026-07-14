@@ -2,18 +2,18 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: backend-servicemonitor
-  namespace: monitoring   # Prometheus Operator가 배포된 namespace
+  namespace: monitoring  
   labels:
     release: kube-prometheus-stack
 spec:
   namespaceSelector:
     matchNames:
-      - default          # 실제 백엔드 Service가 있는 namespace로 변경
+      - campus-navi          
   selector:
     matchLabels:
-      app: backend        # 실제 백엔드 Service의 label과 일치시킬 것
+      app: backend        
   endpoints:
-    - port: http           # 백엔드 Service.spec.ports[].name 과 동일해야 함
+    - port: http          
       path: /actuator/prometheus
       interval: 15s
  
