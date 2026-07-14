@@ -1,0 +1,101 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: campus-navi-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: infrastructure.rules
+      rules:
+        - alert: NodeNotReady
+          expr: kube_node_status_condition{condition="Ready", status="true"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "노드 {{ $labels.node }} NotReady"
+            description: "노드 {{ $labels.node }}가 5분 이상 Ready 상태가 아닙니다."
+
+        - alert: NodeMemoryPressure
+          expr: kube_node_status_condition{condition="MemoryPressure", status="true"} == 1
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "노드 {{ $labels.node }} 메모리 압박"
+            description: "노드 {{ $labels.node }}에서 MemoryPressure=True가 감지됐습니다. 파드 축출이 발생할 수 있습니다."
+
+        - alert: HighNodeCPUUsage
+          expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $labels.instance }} CPU 사용률 85% 초과"
+            description: "{{ $labels.instance }} CPU 사용률이 10분간 85%를 넘었습니다. 현재: {{ $value | printf \"%.1f\" }}%"
+
+        - alert: HighNodeMemoryUsage
+          expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $labels.instance }} 메모리 사용률 85% 초과"
+            description: "{{ $labels.instance }} 메모리 사용률이 10분간 85%를 넘었습니다. 현재: {{ $value | printf \"%.1f\" }}%"
+
+        - alert: KubePodCrashLooping
+          expr: increase(kube_pod_container_status_restarts_total{namespace=~"campus-navi|argocd"}[15m]) > 3
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "파드 {{ $labels.namespace }}/{{ $labels.pod }} 반복 재시작"
+            description: "최근 15분간 3회 이상 재시작했습니다 (컨테이너: {{ $labels.container }})."
+
+        - alert: KubePodNotReady
+          expr: sum by (namespace, pod) (kube_pod_status_phase{namespace=~"campus-navi|argocd", phase=~"Pending|Unknown"}) > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "파드 {{ $labels.namespace }}/{{ $labels.pod }} 10분 이상 비정상"
+            description: "파드가 Pending/Unknown 상태로 10분 이상 유지되고 있습니다."
+
+    - name: springboot-app.rules
+      rules:
+        - alert: BackendTargetDown
+          expr: up{job="backend-svc"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "backend 인스턴스 다운"
+            description: "Prometheus가 backend 타겟({{ $labels.instance }})을 2분 이상 스크랩하지 못하고 있습니다."
+
+        - alert: BackendHighErrorRate
+          expr: |
+            sum(rate(http_server_requests_seconds_count{application="campus-navi-backend", status=~"5.."}[5m]))
+            /
+            sum(rate(http_server_requests_seconds_count{application="campus-navi-backend"}[5m]))
+            > 0.05
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "backend 5xx 에러율 5% 초과"
+            description: "최근 5분간 HTTP 5xx 비율이 5%를 넘었습니다. 현재: {{ $value | printf \"%.1f\" }}%"
+
+        - alert: BackendJvmHeapHigh
+          expr: |
+            sum(jvm_memory_used_bytes{application="campus-navi-backend", area="heap"})
+            /
+            sum(jvm_memory_max_bytes{application="campus-navi-backend", area="heap"})
+            > 0.85
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "backend JVM 힙 사용률 85% 초과"
+            description: "JVM 힙 사용률이 10분간 85%를 넘었습니다. OOM 위험이 있습니다."

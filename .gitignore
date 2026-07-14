@@ -2,3 +2,8 @@ secret-be.yaml
 secret-fe.yaml
 secret.yaml
 iam_policy.json
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*.auto.tfvars
