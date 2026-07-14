@@ -5,6 +5,9 @@
 # =========================================================
 
 # 공통 nodeSelector / toleration 앵커 (YAML 안에서 중복 방지)
+defaultRules:
+  create: false
+
 commonNodeSelector: &nodeSelector
   role: monitoring
 
