@@ -18,7 +18,8 @@ spec:
           annotations:
             summary: "노드 {{ $labels.node }} NotReady"
             description: "노드 {{ $labels.node }}가 5분 이상 Ready 상태가 아닙니다."
-        - alert:
+
+        - alert: NodeMemoryPressure
           expr: kube_node_status_condition{condition="MemoryPressure", status="true"} == 1
           for: 2m
           labels:
