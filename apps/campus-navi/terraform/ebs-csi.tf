@@ -27,6 +27,14 @@ data "aws_iam_policy_document" "ebs_csi_assume_role" {
       values   = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
     }
 
+    # eksctl이 원래 만들었던 신뢰정책에 있던 조건. 토큰의 audience가
+    # sts.amazonaws.com인지도 같이 검증해야 더 안전함 (빠뜨리면 검증이 약해짐)
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+
     principals {
       identifiers = [aws_iam_openid_connect_provider.eks.arn]
       type        = "Federated"
@@ -70,9 +78,10 @@ resource "kubernetes_storage_class" "gp3" {
   metadata {
     name = "gp3"
   }
-  storage_provisioner    = "ebs.csi.aws.com"
-  volume_binding_mode    = "WaitForFirstConsumer"
-  reclaim_policy         = "Delete"
+  storage_provisioner     = "ebs.csi.aws.com"
+  volume_binding_mode     = "WaitForFirstConsumer"
+  reclaim_policy          = "Delete"
+  allow_volume_expansion  = true # addon이 자동 생성한 실제 StorageClass와 동일하게 명시
   parameters = {
     type = "gp3"
   }
