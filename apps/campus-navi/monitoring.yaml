@@ -75,14 +75,17 @@ alertmanager:
   # 지금은 기본 골격만 둡니다.
   config:
     route:
-      receiver: "default"
+      receiver: "discord"
       group_by: ["alertname", "namespace"]
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 3h
       routes: []
     receivers:
-      - name: "default"
+      - name: "discord"
+        discord_configs:
+          - webhook_url: "https://discord.com/api/webhooks/1526391726615433297/14YTJidEYghVJuQ3ovMwufnmdaYJz3VefWZygIlGnUbFHK-DqrK5CYCIRpqN_z8NNfRO"
+            send_resolved: true
       - name: "null"
 
 # ---------------------------------------------------------
